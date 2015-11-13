@@ -1,10 +1,13 @@
+#sunspot
+
 Introduction
 ============
 
-This is the implementation of a modified version for the sunspot detection
-algorithm described in the article "Automatic Sunspots Detection on Full-Disk
-Solar Images using Mathematical Morphology", written by J.J. Curto, M. Blanca
-and E. Martínez.
+This is the implementation of a modified and expanded version for the sunspot
+detection algorithm described in the article "Automatic Sunspots Detection on
+Full-DiskSolar Images using Mathematical Morphology", written by J.J. Curto,
+M. Blanca and E. Martínez. Images from SOHO observatory were used in the tests
+and results.
 
 We also generated an article about our changes and it is currently under
 revision. We will make it available as soon as it is ready.
@@ -16,10 +19,11 @@ Our software build tool is cmake, you also need OpenCV to build this code.
 If you run a debian based machine, you can install the dependecies typing
 this on command line:
 
-> sudo apt-get install gcc g++ cmake make libcv-dev libhighgui-dev
+> sudo apt-get install gcc g++ cmake make libcv-dev libhighgui-dev cfitsio
 
 After that, enter in the build subdirectory and type:
 
+> cd build
 > cmake ..
 > make
 
