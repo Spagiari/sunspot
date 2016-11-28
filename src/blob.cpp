@@ -7,11 +7,11 @@
  * This is free software: you can redistribute it and/or modify it under the terms
  * of the GNU General Public License as published by the Free Software Foundation,
  * version 2 of the License.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * source code. If not, see http://www.gnu.org/licenses/.
  */
@@ -20,11 +20,14 @@
 #include <vector>
 #include <stdio.h>
 #include "blob.hpp"
+#include <iostream>
 
 #include "cv.h"
 #include "highgui.h"
 
 using namespace std;
+
+#define SPOTSIZELIMIT 5
 
 struct lineBlob
 {
@@ -37,7 +40,7 @@ blob_collection detectBlobs(IplImage* frame)
 {
     unsigned int blobCounter = 0;
     blob_collection blobs;
-	
+
 	IplImage* finalFrame;
 
 	finalFrame = cvCloneImage(frame);
@@ -120,56 +123,62 @@ blob_collection detectBlobs(IplImage* frame)
 
                     blobs[imgData[row][entry].blobId].max.y = row;
             }
-			
-			for (int pp = imgData[row][entry].min; pp <= imgData[row][entry].max; ++pp) 
+
+			for (int pp = imgData[row][entry].min; pp <= imgData[row][entry].max; ++pp)
 			{
 				coordinate *p = new coordinate();
-				
+
 				p->x = pp;
 				p->y = row;
-				
+
 				blobs[imgData[row][entry].blobId].listPoints.push_back(*p);
 			}
-			
+
         }
     }
-    
+
     //double dCut = (frame->width * frame->height * 0.00001);
-    
-    list<map<unsigned int, blob>::iterator> lI;
-    
+
+    //list<map<unsigned int, blob>::iterator> lI;
+
 	// Calculate center
-	for(map<unsigned int, blob>::iterator i = blobs.begin(); i != blobs.end(); ++i)
+	for(map<unsigned int, blob>::iterator i = blobs.begin(); i != blobs.end();)
 	{
   //      if (i->second.listPoints.size() > dCut)
   //      {
-            
+
             (*i).second.center.x = (*i).second.min.x + ((*i).second.max.x - (*i).second.min.x) / 2;
             (*i).second.center.y = (*i).second.min.y + ((*i).second.max.y - (*i).second.min.y) / 2;
-            
-            int size = ((*i).second.max.x - (*i).second.min.x) * ((*i).second.max.y - (*i).second.min.y);
-            
+
+            //int size = ((*i).second.max.x - (*i).second.min.x) * ((*i).second.max.y - (*i).second.min.y);
+
             // Print coordinates on image, if it is large enough
-            if(size > 800)
+            if (i->second.listPoints.size() > SPOTSIZELIMIT)//(size > 800)
             {
-                CvFont font;
+                /*CvFont font;
                 cvInitFont(&font, CV_FONT_HERSHEY_PLAIN, 1.0, 1.0, 0, 1, CV_AA);
-                
+
                 char textBuffer[128];
-                
+
                 // Draw crosshair and print coordinates (just for debugging, not necessary for later multi-touch use)
                 cvLine(finalFrame, cvPoint((*i).second.center.x - 5, (*i).second.center.y), cvPoint((*i).second.center.x + 5, (*i).second.center.y), cvScalar(0, 0, 153), 1);
-                
+
                 cvLine(finalFrame, cvPoint((*i).second.center.x, (*i).second.center.y - 5), cvPoint((*i).second.center.x, (*i).second.center.y + 5), cvScalar(0, 0, 153), 1);
-                
+
                 sprintf(textBuffer, "(%d, %d)", (*i).second.center.x, (*i).second.center.y);
-                
+
                 cvPutText(finalFrame, textBuffer, cvPoint((*i).second.center.x + 5, (*i).second.center.y - 5), &font, cvScalar(0, 0, 153));
-                
+
                 cvRectangle(finalFrame, cvPoint((*i).second.min.x, (*i).second.min.y), cvPoint((*i).second.max.x, (*i).second.max.y), cvScalar(0, 0, 153), 1);
-                
-                // Show center point
-                //cout << "(" << (*i).second.center.x << ", " << (*i).second.center.y << ")" << endl;
+
+                // Show center point*/
+                std::cout << "(" << (*i).second.center.x << ", " << (*i).second.center.y << ")" << endl;
+            ++i;
+            }
+            else
+            {
+                std::cout << "ERASE " << (*i).second.center.x << ", " << (*i).second.center.y << ") Size:" << i->second.listPoints.size() <<  endl;
+                i = blobs.erase(i);
             }
     //    }
     //    else
@@ -177,7 +186,7 @@ blob_collection detectBlobs(IplImage* frame)
     //        lI.push_back(i);
     //    }
 	}
-    
+
 //    for(list<map<unsigned int, blob>::iterator>::iterator i = lI.begin(); i != lI.end(); ++i)
 //    {
         //blobs.erase(*i);

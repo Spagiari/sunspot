@@ -58,17 +58,20 @@ int main(int argc, char **argv)
         std::ofstream fWolf;
         std::ofstream fSpotCatalog;
 
-        fWolf.open ("/Users/eduardo/Wolfs.txt");
-        fSpotCatalog.open ("/Users/eduardo/SpotCatalog.txt");
+        fWolf.open ("Wolfs.txt");
+        fSpotCatalog.open ("SpotCatalog.txt");
 
-        fSpotCatalog << "Image;Date;Spot Id;Lat;Lon;Area;Intensity Relative;Mag Avg;Mag Avg Pos;Mag Avg Neg;Sun Intensity Avg; Sun Intensity Max; Sun Intensity Min" << std::endl;
+        fSpotCatalog << "Image;Date;Spot Id;Lat;Lon;Area;Intensity Relative;Mag Avg;Mag Avg Pos;Mag Avg Neg; Mag Min; Mag Max; Sun Intensity Avg; Sun Intensity Max; Sun Intensity Min" << std::endl;
 
         for (int i = optind; i < argc; ++i) {
             IplImage *src = cvLoadImage(argv[i]);
             if (debug)
                 cvShowImage("Original", src);
+
+            std::cout << "Detect sun" << std::endl
             IplImage *dst = detect_sunspots(src);
 
+            std::cout << "Detect Blob" << std::endl
             blob_collection b = detectBlobs(dst);
 
             std::cout << "Found " << b.size() << " sunspots in image " << argv[i] << std::endl;
@@ -112,15 +115,15 @@ int main(int argc, char **argv)
 
             for (iter = b.begin(); iter != b.end(); iter++)
             {
-                double dMagAverage, dMagAveragePos, dMagAverageNeg, dArea, dIntensityAvg;
+                double dMagAverage, dMagAveragePos, dMagAverageNeg, dArea, dIntensityAvg, dMagMin, dMagMax;
 
-                oFitMag.magFieldAverage(iter->second.listPoints, &dMagAverage, &dMagAveragePos, &dMagAverageNeg);
+                oFitMag.magFieldAverage(iter->second.listPoints, &dMagAverage, &dMagAveragePos, &dMagAverageNeg, &dMagMin, &dMagMax);
                 oFitMDIcontinum.Area(&(iter->second), &dArea);
                 oFitMDIcontinum.IntensityAverage(iter->second.listPoints, &dIntensityAvg);
 
                 std::cout  << "/t" << iter->first << "| Center:" << iter->second.getLatDeg() << "," << iter->second.getLonDeg() << "| Points : " << iter->second.listPoints.size() << "| AREA : " << dArea << "| Intensidade " << dIntensityAvg / dIntensity << "| Mag:" << dMagAverage << " : " << dMagAveragePos << " : " << dMagAverageNeg << std::endl;
 
-                fSpotCatalog << argv[i] << ";" << date << ";" << icnt << ";" << iter->second.getLatDeg() << ";" << iter->second.getLonDeg() << ";" << dArea << ";" <<  dIntensityAvg / dIntensity << ";" << dMagAverage << ";" << dMagAveragePos << ";" << dMagAverageNeg << ";" << dIntensity << ";" << dMax << ";" << dMin  << std::endl;;
+                fSpotCatalog << argv[i] << ";" << date << ";" << icnt << ";" << iter->second.getLatDeg() << ";" << iter->second.getLonDeg() << ";" << dArea << ";" <<  dIntensityAvg / dIntensity << ";" << dMagAverage << ";" << dMagAveragePos << ";" << dMagAverageNeg << ";"<< dMagMin << ";" << dMagMax << ";" << dIntensity << ";" << dMax << ";" << dMin  << std::endl;;
 
                 ++icnt;
 
@@ -143,7 +146,7 @@ int main(int argc, char **argv)
 
             oFitMDIcontinum.closeFit();
 
-            cvWaitKey(5	00);
+            cvWaitKey(5);
             cvReleaseImage(&src);
             cvReleaseImage(&dst);
         }
@@ -213,9 +216,9 @@ int main(int argc, char **argv)
 
 		for (iter = b.begin(); iter != b.end(); iter++)
 		{
-            double dMagAverage, dMagAveragePos, dMagAverageNeg, dArea, dIntensityAvg;
+            double dMagAverage, dMagAveragePos, dMagAverageNeg, dArea, dIntensityAvg, dMagMin, dMagMax;
 
-            oFitMag.magFieldAverage(iter->second.listPoints, &dMagAverage, &dMagAveragePos, &dMagAverageNeg);
+            oFitMag.magFieldAverage(iter->second.listPoints, &dMagAverage, &dMagAveragePos, &dMagAverageNeg, &dMagMin, &dMagMax);
             oFitMDIcontinum.Area(&(iter->second), &dArea);
             oFitMDIcontinum.IntensityAverage(iter->second.listPoints, &dIntensityAvg);
 

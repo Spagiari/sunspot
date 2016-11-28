@@ -86,7 +86,7 @@ class fitsToolMag : public fitsTool
 {
 public:
     int openFit(const char * sFitFile);
-    int magFieldAverage(const std::vector<coordinate> & vPoints, double *dMagAverage, double *dMagAveragePos, double *dMagAverageNeg);
+    int magFieldAverage(const std::vector<coordinate> & vPoints, double *dMagAverage, double *dMagAveragePos, double *dMagAverageNeg, double *dMagMin, double *dMagMax);
 };
 
 #endif //FITSTOOL_HPP
