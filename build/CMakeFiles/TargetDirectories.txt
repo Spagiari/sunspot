@@ -1,1 +1,0 @@
-/Users/Eduardo/Window8/Mestrado/sunspot/build/src/CMakeFiles/sunspot.dir
