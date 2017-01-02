@@ -247,7 +247,7 @@ int fitsTool::readFitPoint(coordinate pt, double *dValue)
 {
 	int status = 0;
 
-	pt.y = 1024 - pt.y;
+	//pt.y = 1024 - pt.y;
 
 	status = readFitFile(pt);
 
@@ -579,6 +579,8 @@ int fitsTool::IntensityAverage(const std::vector<coordinate> & vPoints, double *
         int status = readFitPoint((*inter), &dtmp);
 		if (status)
 			return status;
+
+        //std::cout << "     (" << inter->x << ", " << inter->y << " ):" << dtmp << std::endl;
 
         sum += dtmp;
 

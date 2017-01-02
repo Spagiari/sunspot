@@ -7,11 +7,11 @@
  * This is free software: you can redistribute it and/or modify it under the terms
  * of the GNU General Public License as published by the Free Software Foundation,
  * version 2 of the License.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * source code. If not, see http://www.gnu.org/licenses/.
  */
@@ -46,13 +46,13 @@ IplImage *circle_sunspots(IplImage *img, blob_collection &blobs)
 
     blob_collection::const_iterator iter;
 
-    for (iter = blobs.begin(); iter != blobs.end(); ++iter) 
+    for (iter = blobs.begin(); iter != blobs.end(); ++iter)
     {
         std::cout << "x:" << iter->second.center.x << " y:" <<iter->second.center.y << std::endl;
         cvCircle(dst, cvPoint(iter->second.center.x, iter->second.center.y), SUNRADIUS_6GRAUS , cvScalar(0,255,0), 1);
 
         std::vector<coordinate>::const_iterator iterl;
-        for (iterl = iter->second.listPoints.begin(); iterl != iter->second.listPoints.end(); ++iterl) 
+        for (iterl = iter->second.listPoints.begin(); iterl != iter->second.listPoints.end(); ++iterl)
         {
             std::cout << "\tx:" << iterl->x << " y:" <<iterl->y << std::endl;
         }
@@ -83,12 +83,12 @@ struct_sun center_sun(IplImage *img, int debug)
 
     //define centro
 
-    while (ido) 
+    while (ido)
     {
 
         ido = 0;
 
-        xd = 0; 
+        xd = 0;
         xe = 0;
         yh = 0;
         yl = 0;
@@ -103,29 +103,29 @@ struct_sun center_sun(IplImage *img, int debug)
         cvCircle(src, cvPoint(x0, y0), radius , cvScalar(255,255,255), 1);
 
         //x Direita;
-        for (int i= (radius - 2) + x0; i >= x0; --i) 
+        for (int i= (radius - 2) + x0; i >= x0; --i)
         {
             const pixel_type p = (src->imageData + y0 * src->widthStep)[i];
             ++xd;
-            if (p > THRESHOLD) 
+            if (p > THRESHOLD)
             {
                 break;
             }
         }
 
         //x esquerda;
-        for (int i= x0 - (radius - 2) ; i <= x0; ++i) 
+        for (int i= x0 - (radius - 2) ; i <= x0; ++i)
         {
             const pixel_type p = (src->imageData + y0 * src->widthStep)[i];
             ++xe;
-            if (p > THRESHOLD) 
+            if (p > THRESHOLD)
             {
                 break;
             }
         }
 
         //y cima;
-        for (int i= y0 - (radius - 2) ; i <= x0; ++i) 
+        for (int i= y0 - (radius - 2) ; i <= x0; ++i)
         {
             const pixel_type p = (src->imageData + i * src->widthStep)[x0];
             ++yh;
@@ -137,7 +137,7 @@ struct_sun center_sun(IplImage *img, int debug)
         }
 
         //y baixo;
-        for (int i= (radius - 2) + y0; i >= y0; --i) 
+        for (int i= (radius - 2) + y0; i >= y0; --i)
         {
             const pixel_type p = (src->imageData + i * src->widthStep)[x0];
             ++yl;
@@ -150,7 +150,7 @@ struct_sun center_sun(IplImage *img, int debug)
 
         }
 
-        if ( abs(xd - xe) > DELTA) 
+        if ( abs(xd - xe) > DELTA)
         {
             ido = 1;
 
@@ -168,7 +168,7 @@ struct_sun center_sun(IplImage *img, int debug)
             y0 = y0 + ((yh - yl)/2);
 
             if (debug)
-                std::cout << "entrou y"  << abs(yh - yl) << "y0 = " << y0 << std::endl;			
+                std::cout << "entrou y"  << abs(yh - yl) << "y0 = " << y0 << std::endl;
         }
 
         if (debug)
@@ -213,29 +213,29 @@ void put_group (group_sunspot_vector &groups, unsigned int blobida, unsigned int
     vector<unsigned int>::iterator p;
     bool finda = false, findb = false;
 
-    for (itera = groups.begin(); itera != groups.end(); ++itera) 
+    for (itera = groups.begin(); itera != groups.end(); ++itera)
     {
         p = find(itera->blobids.begin(), itera->blobids.end(), blobida);
 
-        if (p != itera->blobids.end()) 
+        if (p != itera->blobids.end())
         {
             finda = true;
             break;
         }
     }
 
-    for (iterb = groups.begin(); iterb != groups.end(); ++iterb) 
+    for (iterb = groups.begin(); iterb != groups.end(); ++iterb)
     {
         p = find(iterb->blobids.begin(), iterb->blobids.end(), blobidb);
 
-        if (p != iterb->blobids.end()) 
+        if (p != iterb->blobids.end())
         {
             findb = true;
             break;
         }
     }
 
-    if (!finda && !findb) 
+    if (!finda && !findb)
     {
         if (blobida == blobidb)
         {
@@ -244,34 +244,34 @@ void put_group (group_sunspot_vector &groups, unsigned int blobida, unsigned int
             groups.push_back(gs);
             groups[i].blobids.push_back(blobida);
         }
-        else 
+        else
         {
             i = groups.size();
             group_sunspot gs = {static_cast<int>(i)};
             groups.push_back(gs);
             groups[i].blobids.push_back(blobida);
-            groups[i].blobids.push_back(blobidb);		
+            groups[i].blobids.push_back(blobidb);
 
         }
     }
 
-    if (finda && !findb) 
+    if (finda && !findb)
     {
-        itera->blobids.push_back(blobidb);		
+        itera->blobids.push_back(blobidb);
     }
 
-    if (!finda && findb) 
+    if (!finda && findb)
     {
-        iterb->blobids.push_back(blobida);		
+        iterb->blobids.push_back(blobida);
     }
 
-    if (finda && findb) 
+    if (finda && findb)
     {
         if (itera->id_group != iterb->id_group)
         {
             vector<unsigned int>::iterator iterblob;
 
-            for (iterblob = iterb->blobids.begin(); iterblob != iterb->blobids.end(); ++iterblob) 
+            for (iterblob = iterb->blobids.begin(); iterblob != iterb->blobids.end(); ++iterblob)
             {
                 itera->blobids.push_back(*iterblob);
             }
@@ -292,7 +292,13 @@ group_sunspot_vector count_groups(const struct_sun &sun, blob_collection &blobs,
 
     group_sunspot_vector *groups = new group_sunspot_vector();
 
-    for (iter = blobs.begin(); iter != blobs.end(); ++iter) 
+    if (img != NULL)
+    {
+        cvShowImage("Result",img);
+        cvWaitKey(0);
+    }
+
+    for (iter = blobs.begin(); iter != blobs.end(); ++iter)
     {
         x = iter->second.center.x - sun.center.x;
         y = iter->second.center.y - sun.center.y;
@@ -309,10 +315,10 @@ group_sunspot_vector count_groups(const struct_sun &sun, blob_collection &blobs,
     }
 
     blob_collection::const_iterator citera;
-    for (citera = blobs.begin(); citera != blobs.end(); ++citera) 
+    for (citera = blobs.begin(); citera != blobs.end(); ++citera)
     {
         IplImage *dst;
-        if (img != NULL) 
+        if (img != NULL)
         {
             dst = cvCreateImage(cvGetSize(img), IPL_DEPTH_8U, 3);
             cvCvtColor( img, dst, CV_GRAY2RGB );
@@ -327,18 +333,18 @@ group_sunspot_vector count_groups(const struct_sun &sun, blob_collection &blobs,
         blob_collection::const_iterator citerb;
         for (citerb = blobs.begin(); citerb != blobs.end(); ++citerb)
         {
-            if (citera->first != citerb->first) 
-            {				
-                double coslamb = sin(citera->second.lat) * sin(citerb->second.lat) + 
-                    cos(citera->second.lat)*cos(citerb->second.lat) * 
+            if (citera->first != citerb->first)
+            {
+                double coslamb = sin(citera->second.lat) * sin(citerb->second.lat) +
+                    cos(citera->second.lat)*cos(citerb->second.lat) *
                     cos(citerb->second.lon - citera->second.lon);
                 double lamb = acos(coslamb);
 
-                if (lamb <= ((6.0/180.0)*PI)) 
+                if (lamb <= ((6.0/180.0)*PI))
                 {
                     put_group(*groups, citera->first, citerb->first);
                     if (img !=NULL)
-                        cvCircle(dst, cvPoint(citerb->second.center.x, citerb->second.center.y), SUNRADIUS_6GRAUS , cvScalar(255,0,0), 1);					
+                        cvCircle(dst, cvPoint(citerb->second.center.x, citerb->second.center.y), SUNRADIUS_6GRAUS , cvScalar(255,0,0), 1);
                 }
                 else
                 {
